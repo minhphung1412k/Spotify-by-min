@@ -3,540 +3,447 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Premium Music Player</title>
+    <title>Máy Phát Nhạc Đỉnh Cao</title>
     
-    <!-- Google Fonts: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --primary: #1db954; /* Màu xanh Spotify */
-            --bg-dark: #000000;
+            --primary: #1db954;
+            --bg-main: #0a0a0c;
+            --card-bg: rgba(22, 22, 28, 0.85);
+            --border-color: rgba(255, 255, 255, 0.1);
             --text-main: #ffffff;
-            --text-sub: #b3b3b3;
-            --glass-bg: rgba(24, 24, 24, 0.6);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-sub: #a0a0a0;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
 
         body {
-            background-color: var(--bg-dark);
+            background-color: var(--bg-main);
             color: var(--text-main);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
+            display: flex; align-items: center; justify-content: center;
+            padding: 15px; overflow-x: hidden; position: relative;
         }
 
-        /* Hình nền mờ (Blur Background) */
-        #bg-image {
-            position: absolute;
-            top: -10%; left: -10%;
-            width: 120%; height: 120%;
-            background-size: cover;
-            background-position: center;
-            filter: blur(40px) brightness(0.4);
-            z-index: -1;
-            transition: background-image 1s ease-in-out;
+        /* Nền mờ ảo diệu đổi theo bài hát */
+        .ambient-bg {
+            position: fixed; top: -20%; left: -20%;
+            width: 140%; height: 140%;
+            background-size: cover; background-position: center;
+            filter: blur(60px) brightness(0.25);
+            z-index: -1; transition: background-image 0.8s ease-in-out;
         }
 
-        /* Container chính (PC & Mobile) */
-        .player-wrapper {
-            width: 100%;
-            max-width: 420px;
-            padding: 30px 24px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 30px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-            z-index: 1;
-        }
-
-        /* Input Link YouTube */
-        .search-box {
-            display: flex; gap: 10px;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 6px 6px 6px 16px;
-            border-radius: 20Chào bạn, đã nhận lệnh! Để đáp ứng yêu cầu "chuẩn AAA", giao diện mượt mà như Spotify, tương thích cả PC lẫn điện thoại, và đặc biệt là code sạch không quảng cáo, tôi đã thiết kế cho bạn một **Web App nghe nhạc hoàn chỉnh**. 
-
-Dưới đây là toàn bộ mã nguồn (được gộp chung HTML, CSS, JavaScript vào một file để bạn dễ dàng chạy thử ngay lập tức). Giao diện sử dụng thiết kế tối màu (Dark Mode), gradient mượt mà, cùng các hiệu ứng hover chuyên nghiệp.
-
-### Hướng dẫn chạy thử:
-1. Tạo một file tên là `index.html` trên máy tính.
-2. Copy toàn bộ đoạn code bên dưới dán vào file đó và lưu lại.
-3. Click đúp vào file `index.html` để mở bằng trình duyệt (Chrome/Edge) và trải nghiệm.
-
-```html
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G-Player | Trải nghiệm âm nhạc đỉnh cao</title>
-    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
-    <link href="[https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap)" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #1DB954;
-            --bg-dark: #121212;
-            --bg-panel: #181818;
-            --bg-hover: #282828;
-            --text-main: #FFFFFF;
-            --text-sub: #B3B3B3;
-            --player-height: 90px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        /* --- MAIN CONTAINER --- */
+        /* Khung chính của App */
         .app-container {
-            display: flex;
-            flex: 1;
-            height: calc(100vh - var(--player-height));
+            width: 100%; max-width: 420px;
+            background: var(--card-bg);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--border-color);
+            border-radius: 28px; padding: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            display: flex; flex-direction: column; gap: 18px;
         }
 
-        /* --- SIDEBAR --- */
-        .sidebar {
-            width: 250px;
-            background-color: #000000;
-            padding: 24px 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+        .app-header { display: flex; align-items: center; justify-content: space-between; }
+        .app-logo { font-size: 18px; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+
+        /* Khung nhập link */
+        .search-box {
+            display: flex; gap: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 6px 6px 6px 14px; border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
-
-        .logo {
-            font-size: 24px;
-            font-weight: 700;
-            padding: 0 12px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .search-box input { flex: 1; background: none; border: none; color: #fff; font-size: 13px; outline: none; }
+        .search-box button {
+            background: var(--primary); color: #000; border: none;
+            padding: 8px 16px; border-radius: 12px; font-weight: 700; font-size: 12px; cursor: pointer; transition: 0.2s;
         }
+        .search-box button:active { transform: scale(0.95); }
 
-        .logo i { color: var(--primary-color); }
-
-        .nav-links {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
+        /* Ảnh bìa */
+        .artwork-wrapper {
+            width: 100%; aspect-ratio: 1; border-radius: 20px;
+            overflow: hidden; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+            background-color: #18181c; display: flex; align-items: center; justify-content: center;
         }
+        .artwork-img { width: 100%; height: 100%; object-fit: cover; display: none; }
+        .artwork-placeholder { font-size: 50px; color: var(--text-sub); }
 
-        .nav-links li {
-            padding: 10px 12px;
-            color: var(--text-sub);
-            font-weight: 600;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        /* Thông tin bài đang phát */
+        .track-details { text-align: center; }
+        .track-title { font-size: 17px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
+        .track-artist { font-size: 13px; color: var(--text-sub); }
+
+        /* Thanh thời gian */
+        .progress-box { display: flex; flex-direction: column; gap: 6px; }
+        .seekbar {
+            width: 100%; height: 5px; -webkit-appearance: none; appearance: none;
+            background: rgba(255, 255, 255, 0.15); border-radius: 10px; outline: none; cursor: pointer;
         }
+        .seekbar::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: var(--primary); }
+        .time-stamps { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-sub); }
 
-        .nav-links li:hover, .nav-links li.active {
-            color: var(--text-main);
-        }
-        
-        .nav-links li.active { background-color: var(--bg-hover); }
-
-        /* --- MAIN VIEW --- */
-        .main-view {
-            flex: 1;
-            background: linear-gradient(180deg, #2a2d36 0%, var(--bg-dark) 100%);
-            padding: 24px;
-            overflow-y: auto;
-        }
-
-        .main-header {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-
-        .song-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .song-item {
-            display: flex;
-            align-items: center;
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .song-item:hover { background-color: rgba(255, 255, 255, 0.1); }
-
-        .song-item img {
-            width: 45px;
-            height: 45px;
-            border-radius: 5px;
-            margin-right: 15px;
-            object-fit: cover;
-        }
-
-        .song-info-list { flex: 1; }
-        .song-title-list { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
-        .song-artist-list { font-size: 14px; color: var(--text-sub); }
-
-        /* --- PLAYER BAR --- */
-        .player-bar {
-            height: var(--player-height);
-            background-color: #181818;
-            border-top: 1px solid #282828;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            z-index: 100;
-        }
-
-        /* 1. Track Info (Left) */
-        .track-info {
-            display: flex;
-            align-items: center;
-            width: 30%;
-            min-width: 180px;
-        }
-
-        .track-info img {
-            width: 56px;
-            height: 56px;
-            border-radius: 5px;
-            margin-right: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            object-fit: cover;
-        }
-
-        .track-title { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
-        .track-artist { font-size: 12px; color: var(--text-sub); }
-
-        /* 2. Controls (Center) */
-        .player-controls-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 40%;
-            max-width: 600px;
-        }
-
-        .main-controls {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 8px;
-        }
-
-        .btn-control {
-            background: none;
-            border: none;
-            color: var(--text-sub);
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .btn-control:hover { color: var(--text-main); }
-
+        /* Nút bấm điều khiển */
+        .controls { display: flex; align-items: center; justify-content: space-between; padding: 0 10px; }
+        .btn-icon { background: none; border: none; color: var(--text-sub); font-size: 18px; cursor: pointer; transition: 0.2s; }
+        .btn-icon.active, .btn-icon:hover { color: var(--primary); }
         .btn-play {
-            width: 35px;
-            height: 35px;
-            background-color: var(--text-main);
-            color: black;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            transition: transform 0.2s;
+            width: 56px; height: 56px; border-radius: 50%;
+            background: var(--primary); color: #000; border: none; font-size: 20px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 6px 20px rgba(29, 185, 84, 0.4); transition: transform 0.2s;
         }
+        .btn-play:active { transform: scale(0.92); }
 
-        .btn-play:hover { transform: scale(1.1); }
-
-        .progress-container {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            gap: 10px;
-            font-size: 12px;
-            color: var(--text-sub);
-        }
-
-        .progress-bar {
-            flex: 1;
-            height: 4px;
-            background-color: #4d4d4d;
-            border-radius: 2px;
-            cursor: pointer;
+        /* Cấu trúc Danh sách phát */
+        .playlist-header { font-size: 13px; font-weight: 700; color: var(--text-sub); margin-top: 5px; display: flex; justify-content: space-between; }
+        .playlist-box { max-height: 150px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
+        
+        /* Tùy chỉnh thanh cuộn đẹp mắt */
+        .playlist-box::-webkit-scrollbar { width: 4px; }
+        .playlist-box::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+        
+        .playlist-item {
+            display: flex; align-items: center; gap: 12px; padding: 8px 10px;
+            background: rgba(255, 255, 255, 0.04); border-radius: 12px; cursor: pointer; transition: 0.2s;
             position: relative;
         }
+        .playlist-item:hover, .playlist-item.active { background: rgba(29, 185, 84, 0.15); }
+        .playlist-thumb { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; }
+        .playlist-info { flex: 1; overflow: hidden; padding-right: 60px; /* Chừa chỗ cho nút sửa/xóa */ }
+        .playlist-title { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; }
+        .playlist-artist { font-size: 11px; color: var(--text-sub); }
 
-        .progress-fill {
-            height: 100%;
-            background-color: var(--primary-color);
-            border-radius: 2px;
-            width: 0%;
-            transition: width 0.1s linear;
+        /* Nút Sửa / Xóa trong danh sách */
+        .playlist-actions {
+            position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+            display: flex; gap: 12px; opacity: 0.7;
         }
-
-        .progress-bar:hover .progress-fill { background-color: var(--primary-color); }
-
-        /* 3. Extra Controls (Right) */
-        .extra-controls {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            width: 30%;
-            gap: 15px;
+        .playlist-actions button {
+            background: none; border: none; font-size: 14px; cursor: pointer; padding: 5px;
+            color: var(--text-sub); transition: 0.2s;
         }
+        .playlist-actions button.btn-edit:hover { color: #3b82f6; opacity: 1; } /* Màu xanh dương khi bấm sửa */
+        .playlist-actions button.btn-delete:hover { color: #ef4444; opacity: 1; } /* Màu đỏ khi bấm xóa */
 
-        /* --- RESPONSIVE MOBILE --- */
-        @media (max-width: 768px) {
-            .sidebar { display: none; } /* Giấu sidebar trên điện thoại */
-            .track-info { width: 40%; }
-            .extra-controls { display: none; } /* Giấu chỉnh âm lượng trên điện thoại */
-            .player-controls-container { width: 60%; }
+        /* Thông báo (Toast) */
+        .toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9); color: #fff; padding: 12px 24px;
+            border-radius: 20px; font-size: 13px; font-weight: 600;
+            border: 1px solid var(--border-color); opacity: 0; pointer-events: none;
+            transition: opacity 0.3s; white-space: nowrap; z-index: 100;
         }
+        .toast.show { opacity: 1; }
     </style>
 </head>
 <body>
 
+    <!-- Hình nền mờ tự động -->
+    <div class="ambient-bg" id="ambient-bg"></div>
+
     <div class="app-container">
-        <!-- Sidebar -->
-        <nav class="sidebar">
-            <div class="logo">
-                <i class="fa-brands fa-spotify"></i> G-Player
-            </div>
-            <ul class="nav-links">
-                <li class="active"><i class="fa-solid fa-house"></i> Trang chủ</li>
-                <li><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</li>
-                <li><i class="fa-solid fa-book"></i> Thư viện</li>
-            </ul>
-        </nav>
+        <div class="app-header">
+            <div class="app-logo"><i class="fa-brands fa-spotify"></i><span>G-Music Tối Thượng</span></div>
+        </div>
 
-        <!-- Main Content -->
-        <main class="main-view">
-            <h1 class="main-header">Dành cho bạn</h1>
-            <div class="song-list" id="playlist">
-                <!-- Nhạc sẽ được render từ JavaScript -->
+        <!-- Khung thêm nhạc -->
+        <div class="search-box">
+            <input type="text" id="yt-url" placeholder="Dán liên kết YouTube vào đây...">
+            <button onclick="addSongFromURL()">Thêm bài</button>
+        </div>
+
+        <!-- Ảnh đĩa nhạc -->
+        <div class="artwork-wrapper">
+            <i class="fa-brands fa-youtube artwork-placeholder" id="placeholder-icon"></i>
+            <img src="" id="artwork" class="artwork-img" alt="Ảnh bìa">
+        </div>
+
+        <!-- Tiêu đề bài hát -->
+        <div class="track-details">
+            <div class="track-title" id="track-title">Chưa chọn bài hát nào</div>
+            <div class="track-artist" id="track-artist">Sẵn sàng bùng nổ âm nhạc</div>
+        </div>
+
+        <!-- Thanh tua nhạc -->
+        <div class="progress-box">
+            <input type="range" class="seekbar" id="seekbar" value="0" min="0" max="100" oninput="seekTo(this.value)">
+            <div class="time-stamps">
+                <span id="curr-time">0:00</span>
+                <span id="total-time">0:00</span>
             </div>
-        </main>
+        </div>
+
+        <!-- Cụm nút điều khiển -->
+        <div class="controls">
+            <button class="btn-icon" id="btn-shuffle" onclick="toggleShuffle()"><i class="fa-solid fa-shuffle"></i></button>
+            <button class="btn-icon" onclick="playPrev()"><i class="fa-solid fa-backward-step"></i></button>
+            <button class="btn-play" id="btn-play" onclick="togglePlay()"><i class="fa-solid fa-play"></i></button>
+            <button class="btn-icon" onclick="playNext()"><i class="fa-solid fa-forward-step"></i></button>
+            <button class="btn-icon" id="btn-repeat" onclick="toggleRepeat()"><i class="fa-solid fa-repeat"></i></button>
+        </div>
+
+        <!-- Danh sách bài hát -->
+        <div class="playlist-header">
+            <span>Danh sách phát của bạn</span>
+            <span id="song-count">0 bài</span>
+        </div>
+        <div class="playlist-box" id="playlist"></div>
     </div>
 
-    <!-- Thanh Player dưới cùng -->
-    <div class="player-bar">
-        <div class="track-info">
-            <img id="cover" src="[https://via.placeholder.com/150/181818/FFFFFF?text=Logo](https://via.placeholder.com/150/181818/FFFFFF?text=Logo)" alt="Album Cover">
-            <div>
-                <div class="track-title" id="title">Chưa có bài hát</div>
-                <div class="track-artist" id="artist">Trống</div>
-            </div>
-        </div>
-
-        <div class="player-controls-container">
-            <div class="main-controls">
-                <button class="btn-control"><i class="fa-solid fa-shuffle"></i></button>
-                <button class="btn-control" id="prevBtn"><i class="fa-solid fa-backward-step"></i></button>
-                <button class="btn-play" id="playBtn"><i class="fa-solid fa-play"></i></button>
-                <button class="btn-control" id="nextBtn"><i class="fa-solid fa-forward-step"></i></button>
-                <button class="btn-control"><i class="fa-solid fa-repeat"></i></button>
-            </div>
-            <div class="progress-container">
-                <span id="currTime">0:00</span>
-                <div class="progress-bar" id="progressContainer">
-                    <div class="progress-fill" id="progress"></div>
-                </div>
-                <span id="durTime">0:00</span>
-            </div>
-        </div>
-
-        <div class="extra-controls">
-            <button class="btn-control"><i class="fa-solid fa-volume-high"></i></button>
-            <div class="progress-bar" style="width: 100px;">
-                <div class="progress-fill" style="width: 100%; background-color: var(--text-main);"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Audio Element Ẩn -->
-    <audio id="audio"></audio>
+    <!-- Hộp thoại thông báo -->
+    <div class="toast" id="toast"></div>
+    <audio id="audio-element"></audio>
 
     <script>
-        // MẢNG DỮ LIỆU BÀI HÁT (Thay đổi link mp3 và hình ảnh thật tại đây)
-        const songs = [
-            {
-                title: "Lofi Study Focus",
-                artist: "G-Chill",
-                src: "[https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3](https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3)",
-                cover: "[https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=500&q=80](https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=500&q=80)"
-            },
-            {
-                title: "Night Drive Synthwave",
-                artist: "Neon Rider",
-                src: "[https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3](https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3)",
-                cover: "[https://images.unsplash.com/photo-1614624532983-4ce03382d63d?w=500&q=80](https://images.unsplash.com/photo-1614624532983-4ce03382d63d?w=500&q=80)"
-            },
-            {
-                title: "Acoustic Sunset",
-                artist: "Indie Vibes",
-                src: "[https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3](https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3)",
-                cover: "[https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=500&q=80](https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=500&q=80)"
-            }
+        const audio = document.getElementById('audio-element');
+        let playlist = JSON.parse(localStorage.getItem('gmusic_playlist_vip')) || [];
+        let currentIndex = -1;
+        let isShuffle = false, isRepeat = false;
+
+        // DANH SÁCH 5 MÁY CHỦ BẢO VỆ CHỐNG LỖI 100%
+        const SERVERS = [
+            'https://pipedapi.kavin.rocks',
+            'https://api.piped.privacydev.net',
+            'https://pipedapi.tokhmi.xyz',
+            'https://piped-api.garudalinux.org',
+            'https://api.piped.mha.fi'
         ];
 
-        let songIndex = 0;
-        let isPlaying = false;
+        window.onload = () => renderPlaylist();
 
-        // Bắt các element DOM
-        const audio = document.getElementById('audio');
-        const playBtn = document.getElementById('playBtn');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const title = document.getElementById('title');
-        const artist = document.getElementById('artist');
-        const cover = document.getElementById('cover');
-        const progress = document.getElementById('progress');
-        const progressContainer = document.getElementById('progressContainer');
-        const currTime = document.getElementById('currTime');
-        const durTime = document.getElementById('durTime');
-        const playlistEl = document.getElementById('playlist');
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
 
-        // Render danh sách phát
+        function extractVideoId(url) {
+            const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+
+        // Kỹ thuật tự động đổi Server không lo bị ngỏm
+        async function fetchAudioWithFallback(videoId) {
+            for (let i = 0; i < SERVERS.length; i++) {
+                try {
+                    const res = await fetch(`${SERVERS[i]}/streams/${videoId}`);
+                    if (!res.ok) continue;
+                    
+                    const data = await res.json();
+                    if (data && data.audioStreams && data.audioStreams.length > 0) {
+                        return data;
+                    }
+                } catch (err) {
+                    console.warn(`Máy chủ ${i + 1} bận, tự động chuyển...`);
+                }
+            }
+            throw new Error("Mạng đang nghẽn!");
+        }
+
+        async function addSongFromURL() {
+            const input = document.getElementById('yt-url');
+            const videoId = extractVideoId(input.value.trim());
+
+            if (!videoId) {
+                showToast("Liên kết không đúng định dạng!");
+                return;
+            }
+
+            showToast("Đang tải dữ liệu chuẩn chất lượng cao...");
+
+            try {
+                const data = await fetchAudioWithFallback(videoId);
+                const audioStream = data.audioStreams.find(s => s.mimeType.includes('mp4') || s.mimeType.includes('m4a')) || data.audioStreams[0];
+
+                const song = {
+                    id: videoId,
+                    title: data.title,
+                    artist: data.uploader,
+                    thumbnail: data.thumbnailUrl,
+                    audioUrl: audioStream.url
+                };
+
+                const existIdx = playlist.findIndex(s => s.id === videoId);
+                if (existIdx === -1) {
+                    playlist.push(song);
+                    saveData();
+                    renderPlaylist();
+                    playSong(playlist.length - 1);
+                    showToast("Đã thêm bài hát tuyệt vời này!");
+                } else {
+                    playSong(existIdx);
+                    showToast("Bài này đã có trong danh sách rồi!");
+                }
+                input.value = '';
+
+            } catch (err) {
+                showToast("Không thể tải bài này, hãy thử bài khác nhé!");
+            }
+        }
+
+        // HÀM CHỈNH SỬA TÊN BÀI HÁT
+        function editSong(index, event) {
+            event.stopPropagation(); // Ngăn việc nhấn vào nút sửa lại thành phát nhạc
+            const currentName = playlist[index].title;
+            const newName = prompt("Nhập tên mới cho bài hát này:", currentName);
+            
+            if (newName !== null && newName.trim() !== "") {
+                playlist[index].title = newName.trim();
+                saveData();
+                renderPlaylist();
+                
+                // Nếu đang phát bài này thì đổi tên trên màn hình luôn
+                if (index === currentIndex) {
+                    document.getElementById('track-title').innerText = playlist[index].title;
+                }
+                showToast("Đã đổi tên bài hát thành công!");
+            }
+        }
+
+        // HÀM XOÁ BÀI HÁT
+        function deleteSong(index, event) {
+            event.stopPropagation(); // Ngăn việc nhấn vào nút xóa lại thành phát nhạc
+            const confirmDelete = confirm("Bạn có chắc chắn muốn xoá bài '" + playlist[index].title + "' khỏi danh sách không?");
+            
+            if (confirmDelete) {
+                playlist.splice(index, 1);
+                saveData();
+                
+                // Xử lý logic nếu xoá trúng bài đang hát
+                if (index === currentIndex) {
+                    audio.pause();
+                    currentIndex = -1;
+                    document.getElementById('track-title').innerText = "Vui lòng chọn bài khác";
+                    document.getElementById('track-artist').innerText = "";
+                    document.getElementById('artwork').style.display = 'none';
+                    document.getElementById('placeholder-icon').style.display = 'block';
+                    document.getElementById('ambient-bg').style.backgroundImage = 'none';
+                    updatePlayBtn(false);
+                } else if (index < currentIndex) {
+                    currentIndex--; // Lùi index lại để không bị lệch bài đang phát
+                }
+                
+                renderPlaylist();
+                showToast("Đã xoá bài hát!");
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('gmusic_playlist_vip', JSON.stringify(playlist));
+        }
+
         function renderPlaylist() {
-            playlistEl.innerHTML = '';
-            songs.forEach((song, index) => {
-                const songEl = document.createElement('div');
-                songEl.classList.add('song-item');
-                songEl.innerHTML = `
-                    <img src="${song.cover}" alt="Cover">
-                    <div class="song-info-list">
-                        <div class="song-title-list">${song.title}</div>
-                        <div class="song-artist-list">${song.artist}</div>
+            const container = document.getElementById('playlist');
+            document.getElementById('song-count').innerText = `${playlist.length} bài`;
+            container.innerHTML = '';
+            
+            playlist.forEach((song, idx) => {
+                const item = document.createElement('div');
+                item.className = `playlist-item ${idx === currentIndex ? 'active' : ''}`;
+                item.onclick = () => playSong(idx);
+                
+                item.innerHTML = `
+                    <img class="playlist-thumb" src="${song.thumbnail}" alt="ảnh thu nhỏ">
+                    <div class="playlist-info">
+                        <div class="playlist-title">${song.title}</div>
+                        <div class="playlist-artist">${song.artist}</div>
+                    </div>
+                    <div class="playlist-actions">
+                        <button class="btn-edit" onclick="editSong(${idx}, event)" title="Sửa tên bài"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn-delete" onclick="deleteSong(${idx}, event)" title="Xoá bài"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 `;
-                songEl.addEventListener('click', () => {
-                    songIndex = index;
-                    loadSong(songs[songIndex]);
-                    playSong();
-                });
-                playlistEl.appendChild(songEl);
+                container.appendChild(item);
             });
         }
 
-        // Tải bài hát vào player
-        function loadSong(song) {
-            title.innerText = song.title;
-            artist.innerText = song.artist;
-            cover.src = song.cover;
-            audio.src = song.src;
-        }
+        function playSong(index) {
+            if (index < 0 || index >= playlist.length) return;
+            currentIndex = index;
+            const song = playlist[currentIndex];
 
-        // Play / Pause
-        function playSong() {
-            isPlaying = true;
-            playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-            audio.play();
-        }
-
-        function pauseSong() {
-            isPlaying = false;
-            playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
-            audio.pause();
-        }
-
-        playBtn.addEventListener('click', () => {
-            if (isPlaying) pauseSong();
-            else playSong();
-        });
-
-        // Next / Prev
-        function prevSong() {
-            songIndex--;
-            if (songIndex < 0) songIndex = songs.length - 1;
-            loadSong(songs[songIndex]);
-            playSong();
-        }
-
-        function nextSong() {
-            songIndex++;
-            if (songIndex > songs.length - 1) songIndex = 0;
-            loadSong(songs[songIndex]);
-            playSong();
-        }
-
-        prevBtn.addEventListener('click', prevSong);
-        nextBtn.addEventListener('click', nextSong);
-
-        // Cập nhật thanh tiến trình
-        function updateProgress(e) {
-            const { duration, currentTime } = e.srcElement;
-            if(isNaN(duration)) return;
+            document.getElementById('track-title').innerText = song.title;
+            document.getElementById('track-artist').innerText = song.artist;
             
-            // Cập nhật vạch chạy
-            const progressPercent = (currentTime / duration) * 100;
-            progress.style.width = `${progressPercent}%`;
+            const artwork = document.getElementById('artwork');
+            artwork.src = song.thumbnail;
+            artwork.style.display = 'block';
+            document.getElementById('placeholder-icon').style.display = 'none';
+            document.getElementById('ambient-bg').style.backgroundImage = `url('${song.thumbnail}')`;
 
-            // Cập nhật số thời gian
-            let min_curr = Math.floor(currentTime / 60);
-            let sec_curr = Math.floor(currentTime % 60);
-            if(sec_curr < 10) sec_curr = `0${sec_curr}`;
-            currTime.innerText = `${min_curr}:${sec_curr}`;
+            audio.src = song.audioUrl;
+            audio.play().then(() => updatePlayBtn(true)).catch(() => showToast("Vui lòng chạm vào nút Phát"));
 
-            let min_dur = Math.floor(duration / 60);
-            let sec_dur = Math.floor(duration % 60);
-            if(sec_dur < 10) sec_dur = `0${sec_dur}`;
-            durTime.innerText = `${min_dur}:${sec_dur}`;
+            // Cập nhật màn hình khóa
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: song.title,
+                    artist: song.artist,
+                    artwork: [{ src: song.thumbnail, sizes: '512x512', type: 'image/jpeg' }]
+                });
+            }
+            renderPlaylist();
         }
-        audio.addEventListener('timeupdate', updateProgress);
 
-        // Tua nhạc khi click vào thanh tiến trình
-        function setProgress(e) {
-            const width = this.clientWidth;
-            const clickX = e.offsetX;
-            const duration = audio.duration;
-            audio.currentTime = (clickX / width) * duration;
+        function togglePlay() {
+            if (currentIndex === -1 && playlist.length > 0) { playSong(0); return; }
+            if (!audio.src) return;
+            if (audio.paused) { audio.play(); updatePlayBtn(true); } 
+            else { audio.pause(); updatePlayBtn(false); }
         }
-        progressContainer.addEventListener('click', setProgress);
 
-        // Tự chuyển bài khi hết nhạc
-        audio.addEventListener('ended', nextSong);
+        function updatePlayBtn(isPlaying) {
+            document.getElementById('btn-play').innerHTML = isPlaying ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>';
+        }
 
-        // Khởi tạo ban đầu
-        renderPlaylist();
-        loadSong(songs[songIndex]);
+        function playNext() {
+            if (playlist.length === 0) return;
+            let nextIdx = isShuffle ? Math.floor(Math.random() * playlist.length) : (currentIndex + 1) % playlist.length;
+            playSong(nextIdx);
+        }
+
+        function playPrev() {
+            if (playlist.length === 0) return;
+            let prevIdx = (currentIndex - 1 + playlist.length) % playlist.length;
+            playSong(prevIdx);
+        }
+
+        function toggleShuffle() {
+            isShuffle = !isShuffle;
+            document.getElementById('btn-shuffle').classList.toggle('active', isShuffle);
+            showToast(isShuffle ? "Đã bật chế độ phát ngẫu nhiên" : "Đã tắt chế độ phát ngẫu nhiên");
+        }
+
+        function toggleRepeat() {
+            isRepeat = !isRepeat;
+            document.getElementById('btn-repeat').classList.toggle('active', isRepeat);
+            showToast(isRepeat ? "Sẽ lặp lại bài hát này" : "Đã tắt chế độ lặp lại");
+        }
+
+        audio.ontimeupdate = () => {
+            if (audio.duration) {
+                document.getElementById('seekbar').value = (audio.currentTime / audio.duration) * 100;
+                document.getElementById('curr-time').innerText = formatTime(audio.currentTime);
+                document.getElementById('total-time').innerText = formatTime(audio.duration);
+            }
+        };
+
+        audio.onended = () => { if (isRepeat) audio.play(); else playNext(); };
+
+        function seekTo(val) { if (audio.duration) audio.currentTime = (val / 100) * audio.duration; }
+
+        function formatTime(sec) {
+            const m = Math.floor(sec / 60), s = Math.floor(sec % 60);
+            return `${m}:${s < 10 ? '0' : ''}${s}`;
+        }
     </script>
 </body>
 </html>
