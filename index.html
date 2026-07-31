@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trình Phát Nhạc Âm Nhạc Pro</title>
+    <title>spotify by min</title>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -51,6 +51,7 @@
             flex-direction: column;
             gap: 20px;
             border-right: 1px solid var(--border-color);
+            flex-shrink: 0;
         }
 
         .logo {
@@ -73,9 +74,10 @@
             justify-content: space-between;
             align-items: center;
             color: var(--text-sub);
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             padding: 0 8px;
+            letter-spacing: 1px;
         }
 
         .btn-add-playlist {
@@ -111,6 +113,7 @@
             font-size: 14px;
             font-weight: 600;
             transition: 0.2s;
+            group: item;
         }
 
         .playlist-item:hover, .playlist-item.active {
@@ -120,6 +123,45 @@
 
         .playlist-item.active {
             border-left: 4px solid var(--primary);
+            border-radius: 0 6px 6px 0;
+        }
+
+        .playlist-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .playlist-info span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .playlist-actions {
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: 0.2s;
+        }
+
+        .playlist-item:hover .playlist-actions,
+        .playlist-item.active .playlist-actions {
+            opacity: 1;
+        }
+
+        .playlist-actions i {
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        
+        .playlist-actions i:hover {
+            color: var(--primary);
+        }
+        .playlist-actions .fa-trash-can:hover {
+            color: #ff4d4d;
         }
 
         /* Nội dung chính bên phải */
@@ -177,6 +219,7 @@
             font-weight: bold;
             cursor: pointer;
             transition: 0.2s;
+            white-space: nowrap;
         }
 
         .input-group button:hover {
@@ -184,30 +227,26 @@
             background-color: #1ed760;
         }
 
-        /* Bảng danh sách bài hát */
+        /* Danh sách bài hát dạng Flexbox (Tốt cho cả PC và Mobile) */
         .songs-section h3 {
             font-size: 22px;
             margin-bottom: 16px;
         }
 
-        .song-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .song-table th {
-            text-align: left;
-            color: var(--text-sub);
-            font-weight: 400;
-            border-bottom: 1px solid var(--border-color);
-            padding: 10px 16px;
-            font-size: 13px;
+        .song-list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .song-row {
-            transition: 0.2s;
-            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding: 10px 16px;
+            border-radius: 6px;
             cursor: pointer;
+            transition: 0.2s;
+            background-color: transparent;
         }
 
         .song-row:hover {
@@ -222,15 +261,18 @@
             color: var(--primary);
         }
 
-        .song-row td {
-            padding: 10px 16px;
-            vertical-align: middle;
+        .song-index {
+            width: 30px;
+            color: var(--text-sub);
+            font-size: 14px;
         }
 
         .song-info {
             display: flex;
             align-items: center;
             gap: 12px;
+            flex: 1;
+            overflow: hidden;
         }
 
         .song-thumb {
@@ -239,17 +281,32 @@
             border-radius: 4px;
             object-fit: cover;
             background-color: #282828;
+            flex-shrink: 0;
+        }
+
+        .song-text {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
         .song-title {
             font-weight: 600;
             font-size: 15px;
             color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .song-artist {
             font-size: 13px;
             color: var(--text-sub);
+        }
+
+        .song-actions {
+            width: 40px;
+            text-align: right;
         }
 
         .btn-delete {
@@ -274,6 +331,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 24px;
+            flex-shrink: 0;
         }
 
         /* Bài hát đang phát */
@@ -281,7 +339,7 @@
             display: flex;
             align-items: center;
             gap: 14px;
-            width: 25%;
+            width: 30%;
         }
 
         .now-playing img {
@@ -317,8 +375,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
-            width: 50%;
+            gap: 8px;
+            width: 40%;
         }
 
         .control-btns {
@@ -405,17 +463,76 @@
             opacity: 1;
         }
 
+        .empty-spacer {
+            width: 30%;
+        }
+
         .empty-state {
             text-align: center;
             padding: 40px;
             color: var(--text-sub);
         }
 
-        /* Player ẩn */
         #yt-player-hidden {
             position: absolute;
             top: -9999px;
             left: -9999px;
+        }
+
+        /* TỐI ƯU GIAO DIỆN ĐIỆN THOẠI (MOBILE RESPONSIVE) */
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                max-height: 250px;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding: 16px;
+            }
+
+            .main-content {
+                padding: 16px;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            .song-index {
+                display: none; /* Ẩn số thứ tự trên điện thoại cho gọn */
+            }
+
+            .player-bar {
+                height: auto;
+                flex-direction: column;
+                padding: 12px 16px 20px 16px;
+                gap: 16px;
+            }
+
+            .now-playing {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            
+            .now-playing img {
+                width: 48px;
+                height: 48px;
+            }
+
+            .player-controls {
+                width: 100%;
+            }
+
+            .empty-spacer {
+                display: none; /* Ẩn khoảng trống trên điện thoại */
+            }
+            
+            .playlist-actions {
+                opacity: 1; /* Luôn hiện nút sửa/xóa trên mobile */
+            }
         }
     </style>
 </head>
@@ -426,9 +543,9 @@
         <div class="sidebar">
             <div class="logo">
                 <i class="fa-brands fa-spotify"></i>
-                <span>Music Player</span>
+                <span>spotify by min</span>
             </div>
-            <hr style="border-color: var(--border-color);">
+            <hr style="border-color: var(--border-color); margin-top: -5px;">
             <div class="playlist-header">
                 <span>DANH SÁCH PHÁT</span>
                 <button class="btn-add-playlist" title="Tạo danh sách phát mới" onclick="createNewPlaylist()">
@@ -436,7 +553,7 @@
                 </button>
             </div>
             <ul class="playlist-list" id="playlist-container">
-                <!-- Các danh sách phát sẽ hiển thị ở đây -->
+                <!-- Playlists Render Here -->
             </ul>
         </div>
 
@@ -447,25 +564,16 @@
                 <h2><i class="fa-solid fa-plus-circle" style="color: var(--primary);"></i> Thêm bài hát mới</h2>
                 <div class="input-group">
                     <input type="text" id="youtube-url" placeholder="Dán đường dẫn (Link) YouTube vào đây...">
-                    <button onclick="addSongToCurrentPlaylist()"><i class="fa-solid fa-plus"></i> Thêm nhạc</button>
+                    <button onclick="addSongToCurrentPlaylist()">Thêm nhạc</button>
                 </div>
             </div>
 
             <!-- Danh sách bài hát -->
             <div class="songs-section">
                 <h3 id="current-playlist-title">Danh sách bài hát</h3>
-                <table class="song-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 40px;">#</th>
-                            <th>TIÊU ĐỀ BÀI HÁT</th>
-                            <th style="width: 60px; text-align: center;"><i class="fa-regular fa-trash-can"></i></th>
-                        </tr>
-                    </thead>
-                    <tbody id="song-list-body">
-                        <!-- Danh sách bài hát -->
-                    </tbody>
-                </table>
+                <div class="song-list-container" id="song-list-body">
+                    <!-- Songs Render Here -->
+                </div>
                 <div id="empty-msg" class="empty-state">
                     Danh sách phát này chưa có bài hát nào. Hãy dán link YouTube lên khung trên để thêm nhạc!
                 </div>
@@ -473,14 +581,14 @@
         </div>
     </div>
 
-    <!-- Thanh Điều Kiển Cố Định -->
+    <!-- Thanh Điều Khiển Cố Định -->
     <div class="player-bar">
         <!-- Thông tin bài hát -->
         <div class="now-playing">
             <img id="np-img" src="https://via.placeholder.com/56/282828/ffffff?text=Music" alt="Thumb">
             <div class="now-playing-info">
                 <div id="np-title" class="np-title">Chưa chọn bài hát</div>
-                <div id="np-artist" class="np-artist">YouTube Music</div>
+                <div id="np-artist" class="np-artist">spotify by min</div>
             </div>
         </div>
 
@@ -512,7 +620,7 @@
             </div>
         </div>
 
-        <div style="width: 25%;"></div>
+        <div class="empty-spacer"></div>
     </div>
 
     <!-- YouTube Iframe Ẩn -->
@@ -522,9 +630,9 @@
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        // Cấu trúc dữ liệu Lưu trữ Danh sách phát
+        // Cấu trúc dữ liệu
         let playlists = [
-            { id: 1, name: "Danh sách mặc định", songs: [] }
+            { id: 1, name: "Nhạc của tôi", songs: [] }
         ];
         let currentPlaylistId = 1;
         let currentSongIndex = -1;
@@ -545,14 +653,13 @@
             });
         }
 
-        // Tách ID Video từ Link YouTube
         function extractVideoId(url) {
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
             const match = url.match(regExp);
             return (match && match[2].length === 11) ? match[2] : null;
         }
 
-        // Tạo Danh sách phát mới
+        // --- Quản lý Danh sách phát ---
         function createNewPlaylist() {
             const name = prompt("Nhập tên danh sách phát mới:");
             if (name && name.trim() !== "") {
@@ -566,14 +673,43 @@
             }
         }
 
-        // Chuyển đổi Danh sách phát
+        function renamePlaylist(event, id) {
+            event.stopPropagation(); // Ngăn sự kiện click chọn playlist
+            const pl = playlists.find(p => p.id === id);
+            if (!pl) return;
+            
+            const newName = prompt("Nhập tên mới cho danh sách phát:", pl.name);
+            if (newName && newName.trim() !== "") {
+                pl.name = newName.trim();
+                renderPlaylists();
+                if (currentPlaylistId === id) {
+                    document.getElementById('current-playlist-title').innerText = pl.name;
+                }
+            }
+        }
+
+        function deletePlaylist(event, id) {
+            event.stopPropagation();
+            if (playlists.length <= 1) {
+                alert("Phải có ít nhất 1 danh sách phát!");
+                return;
+            }
+            if (confirm("Bạn có chắc muốn xóa toàn bộ danh sách phát này?")) {
+                playlists = playlists.filter(p => p.id !== id);
+                if (currentPlaylistId === id) {
+                    currentPlaylistId = playlists[0].id; // Trở về playlist đầu tiên
+                }
+                renderPlaylists();
+                renderSongs();
+            }
+        }
+
         function selectPlaylist(id) {
             currentPlaylistId = id;
             renderPlaylists();
             renderSongs();
         }
 
-        // Render Danh sách phát ở Sidebar
         function renderPlaylists() {
             const container = document.getElementById('playlist-container');
             container.innerHTML = '';
@@ -582,9 +718,16 @@
                 const li = document.createElement('li');
                 li.className = `playlist-item ${pl.id === currentPlaylistId ? 'active' : ''}`;
                 li.onclick = () => selectPlaylist(pl.id);
+                
                 li.innerHTML = `
-                    <span><i class="fa-solid fa-music" style="margin-right: 8px;"></i>${pl.name}</span>
-                    ${playlists.length > 1 ? `<i class="fa-solid fa-xmark btn-delete" onclick="deletePlaylist(event, ${pl.id})"></i>` : ''}
+                    <div class="playlist-info">
+                        <i class="fa-solid fa-music"></i>
+                        <span>${pl.name}</span>
+                    </div>
+                    <div class="playlist-actions">
+                        <i class="fa-solid fa-pen" title="Đổi tên" onclick="renamePlaylist(event, ${pl.id})"></i>
+                        ${playlists.length > 1 ? `<i class="fa-solid fa-trash-can" title="Xóa" onclick="deletePlaylist(event, ${pl.id})"></i>` : ''}
+                    </div>
                 `;
                 container.appendChild(li);
             });
@@ -595,20 +738,7 @@
             }
         }
 
-        // Xóa Danh sách phát
-        function deletePlaylist(event, id) {
-            event.stopPropagation();
-            if (confirm("Bạn có chắc muốn xóa danh sách phát này?")) {
-                playlists = playlists.filter(p => p.id !== id);
-                if (currentPlaylistId === id) {
-                    currentPlaylistId = playlists[0].id;
-                }
-                renderPlaylists();
-                renderSongs();
-            }
-        }
-
-        // Thêm Bài Hát
+        // --- Quản lý Bài hát ---
         function addSongToCurrentPlaylist() {
             const input = document.getElementById('youtube-url');
             const videoId = extractVideoId(input.value.trim());
@@ -632,18 +762,17 @@
                     input.value = '';
                     renderSongs();
 
-                    if (currentPl.songs.length === 1) {
+                    if (currentPl.songs.length === 1 && currentSongIndex === -1) {
                         playSong(0);
                     }
                 });
         }
 
-        // Render Bài Hát ra Màn Hình
         function renderSongs() {
             const currentPl = playlists.find(p => p.id === currentPlaylistId);
-            const tbody = document.getElementById('song-list-body');
+            const container = document.getElementById('song-list-body');
             const emptyMsg = document.getElementById('empty-msg');
-            tbody.innerHTML = '';
+            container.innerHTML = '';
 
             if (!currentPl || currentPl.songs.length === 0) {
                 emptyMsg.style.display = 'block';
@@ -653,35 +782,61 @@
             }
 
             currentPl.songs.forEach((song, index) => {
-                const tr = document.createElement('tr');
-                tr.className = `song-row ${index === currentSongIndex ? 'active-song' : ''}`;
-                tr.onclick = (e) => {
+                const row = document.createElement('div');
+                row.className = `song-row ${index === currentSongIndex ? 'active-song' : ''}`;
+                row.onclick = (e) => {
                     if (e.target.closest('.btn-delete')) return;
                     playSong(index);
                 };
 
-                tr.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>
-                        <div class="song-info">
-                            <img class="song-thumb" src="${song.thumbnail}" alt="thumb">
-                            <div>
-                                <div class="song-title">${song.title}</div>
-                                <div class="song-artist">YouTube Music</div>
-                            </div>
+                row.innerHTML = `
+                    <div class="song-index">${index + 1}</div>
+                    <div class="song-info">
+                        <img class="song-thumb" src="${song.thumbnail}" alt="thumb">
+                        <div class="song-text">
+                            <span class="song-title">${song.title}</span>
+                            <span class="song-artist">spotify by min</span>
                         </div>
-                    </td>
-                    <td style="text-align: center;">
+                    </div>
+                    <div class="song-actions">
                         <button class="btn-delete" title="Xóa" onclick="deleteSong(${index})">
                             <i class="fa-solid fa-trash"></i>
                         </button>
-                    </td>
+                    </div>
                 `;
-                tbody.appendChild(tr);
+                container.appendChild(row);
             });
         }
 
-        // Phát bài hát
+        function deleteSong(index) {
+            const currentPl = playlists.find(p => p.id === currentPlaylistId);
+            if (!currentPl) return;
+
+            currentPl.songs.splice(index, 1);
+
+            if (index === currentSongIndex) {
+                if (currentPl.songs.length > 0) {
+                    playSong(index % currentPl.songs.length);
+                } else {
+                    currentSongIndex = -1;
+                    if (player) player.stopVideo();
+                    isPlaying = false;
+                    updatePlayButton();
+                    document.getElementById('np-img').src = 'https://via.placeholder.com/56/282828/ffffff?text=Music';
+                    document.getElementById('np-title').innerText = 'Chưa chọn bài hát';
+                    clearInterval(progressTimer);
+                    document.getElementById('seek-bar').value = 0;
+                    document.getElementById('curr-time').innerText = "00:00";
+                    document.getElementById('total-time').innerText = "00:00";
+                }
+            } else if (index < currentSongIndex) {
+                currentSongIndex--;
+            }
+
+            renderSongs();
+        }
+
+        // --- Điều khiển nhạc ---
         function playSong(index) {
             const currentPl = playlists.find(p => p.id === currentPlaylistId);
             if (!currentPl || index < 0 || index >= currentPl.songs.length) return;
@@ -703,12 +858,11 @@
             renderSongs();
         }
 
-        // Thiết lập Media Session để bấm nút trên Tai Nghe
         function setupMediaSession(song) {
             if ('mediaSession' in navigator) {
                 navigator.mediaSession.metadata = new MediaMetadata({
                     title: song.title,
-                    artist: 'YouTube Music',
+                    artist: 'spotify by min',
                     artwork: [{ src: song.thumbnail, sizes: '512x512', type: 'image/jpeg' }]
                 });
 
@@ -719,7 +873,6 @@
             }
         }
 
-        // Nút Play / Pause
         function togglePlay() {
             const currentPl = playlists.find(p => p.id === currentPlaylistId);
             if (currentSongIndex === -1 && currentPl && currentPl.songs.length > 0) {
@@ -745,7 +898,6 @@
             btn.innerHTML = isPlaying ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>';
         }
 
-        // Bật/Tắt Lặp lại & Ngẫu nhiên
         function toggleRepeat() {
             isRepeat = !isRepeat;
             document.getElementById('btn-repeat').classList.toggle('active-mode', isRepeat);
@@ -756,7 +908,6 @@
             document.getElementById('btn-shuffle').classList.toggle('active-mode', isShuffle);
         }
 
-        // Bài tiếp & Bài trước
         function playNext() {
             const currentPl = playlists.find(p => p.id === currentPlaylistId);
             if (!currentPl || currentPl.songs.length === 0) return;
@@ -778,33 +929,7 @@
             playSong(prevIdx);
         }
 
-        // Xóa bài hát
-        function deleteSong(index) {
-            const currentPl = playlists.find(p => p.id === currentPlaylistId);
-            if (!currentPl) return;
-
-            currentPl.songs.splice(index, 1);
-
-            if (index === currentSongIndex) {
-                if (currentPl.songs.length > 0) {
-                    playSong(index % currentPl.songs.length);
-                } else {
-                    currentSongIndex = -1;
-                    if (player) player.stopVideo();
-                    isPlaying = false;
-                    updatePlayButton();
-                    document.getElementById('np-img').src = 'https://via.placeholder.com/56/282828/ffffff?text=Music';
-                    document.getElementById('np-title').innerText = 'Chưa chọn bài hát';
-                    clearInterval(progressTimer);
-                }
-            } else if (index < currentSongIndex) {
-                currentSongIndex--;
-            }
-
-            renderSongs();
-        }
-
-        // Quản lý Thanh Tua Nhạc & Thời Gian
+        // --- Thanh thời lượng ---
         function startProgressTimer() {
             clearInterval(progressTimer);
             progressTimer = setInterval(() => {
@@ -835,7 +960,6 @@
             return `${min < 10 ? '0' : ''}${min}:${sec < 10 ? '0' : ''}${sec}`;
         }
 
-        // Sự kiện tự chuyển bài khi kết thúc video YouTube
         function onPlayerStateChange(event) {
             if (event.data === 0) { // ENDED
                 if (isRepeat) {
@@ -846,8 +970,9 @@
             }
         }
 
-        // Khởi tạo ban đầu
+        // Khởi tạo
         renderPlaylists();
+        renderSongs();
     </script>
 </body>
 </html>
