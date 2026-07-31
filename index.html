@@ -16,6 +16,7 @@
             --text-main: #ffffff;
             --text-sub: #b3b3b3;
             --border-color: #282828;
+            --danger: #e91429;
         }
 
         * {
@@ -144,14 +145,81 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 20px;
         }
+
+        /* Input Options Container */
+        .add-music-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .card-box {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: 0.2s;
+        }
+
+        .card-box:hover { border-color: #404040; }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-main);
+        }
+
+        .card-title i { color: var(--primary); }
+
+        .url-input-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .custom-input {
+            flex: 1;
+            background-color: #282828;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            padding: 10px 14px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .custom-input:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-custom {
+            background-color: var(--primary);
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            padding: 0 16px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-custom:hover { transform: scale(1.03); }
 
         .upload-area {
             border: 2px dashed var(--border-color);
-            background-color: var(--bg-card);
-            padding: 30px;
-            border-radius: 12px;
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            padding: 12px;
             text-align: center;
             cursor: pointer;
             transition: 0.2s;
@@ -162,21 +230,7 @@
             background-color: var(--bg-card-hover);
         }
 
-        .upload-area i {
-            font-size: 36px;
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-
-        .upload-area p {
-            color: var(--text-sub);
-            font-size: 14px;
-        }
-
-        .upload-area span {
-            color: var(--text-main);
-            font-weight: bold;
-        }
+        .upload-area p { color: var(--text-sub); font-size: 12px; }
 
         /* Song List */
         .songs-section h3 {
@@ -222,15 +276,15 @@
         }
 
         .song-icon-box {
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             border-radius: 4px;
             background-color: #282828;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--primary);
-            font-size: 20px;
+            font-size: 18px;
             flex-shrink: 0;
         }
 
@@ -242,7 +296,7 @@
 
         .song-title {
             font-weight: 600;
-            font-size: 15px;
+            font-size: 14px;
             color: var(--text-main);
             white-space: nowrap;
             overflow: hidden;
@@ -250,7 +304,7 @@
         }
 
         .song-artist {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-sub);
         }
 
@@ -264,7 +318,7 @@
             border: none;
             color: var(--text-sub);
             cursor: pointer;
-            font-size: 16px;
+            font-size: 15px;
             transition: 0.2s;
         }
 
@@ -290,15 +344,15 @@
         }
 
         .np-icon-box {
-            width: 56px;
-            height: 56px;
+            width: 52px;
+            height: 52px;
             border-radius: 4px;
             background-color: #282828;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--primary);
-            font-size: 24px;
+            font-size: 22px;
         }
 
         .now-playing-info {
@@ -411,9 +465,132 @@
             color: var(--text-sub);
         }
 
+        /* --- CUSTOM MODAL & TOAST UI --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background-color: #242424;
+            border: 1px solid var(--border-color);
+            width: 400px;
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            transform: scale(0.95);
+            transition: 0.2s ease;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--text-main);
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .btn-modal-cancel {
+            background: none;
+            border: none;
+            color: var(--text-sub);
+            padding: 8px 16px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        .btn-modal-cancel:hover { color: var(--text-main); }
+
+        .btn-modal-confirm {
+            background-color: var(--primary);
+            color: #000;
+            border: none;
+            padding: 8px 20px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        .btn-modal-danger {
+            background-color: var(--danger);
+            color: #fff;
+            border: none;
+            padding: 8px 20px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            bottom: 110px;
+            right: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 1100;
+        }
+
+        .toast {
+            background-color: #2e2e2e;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 4px solid var(--primary);
+            animation: slideIn 0.3s ease, fadeOut 0.3s 2.7s ease forwards;
+        }
+
+        .toast.toast-error {
+            border-left-color: var(--danger);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
         @media (max-width: 768px) {
             .app-container { flex-direction: column; }
-            .sidebar { width: 100%; max-height: 200px; }
+            .sidebar { width: 100%; max-height: 180px; }
+            .add-music-section { grid-template-columns: 1fr; }
             .main-content { padding: 16px; }
             .song-index { display: none; }
             .player-bar { flex-direction: column; height: auto; padding: 12px 16px; gap: 12px; }
@@ -426,7 +603,6 @@
 <body>
 
     <audio id="audio-player"></audio>
-    <!-- Ô chọn file ẩn -->
     <input type="file" id="file-input" accept="audio/*" multiple style="display: none;">
 
     <div class="app-container">
@@ -439,7 +615,7 @@
             <hr style="border-color: var(--border-color); margin-top: -5px;">
             <div class="playlist-header">
                 <span>DANH SÁCH PHÁT</span>
-                <button class="btn-add-playlist" title="Tạo danh sách phát mới" onclick="createNewPlaylist()">
+                <button class="btn-add-playlist" title="Tạo danh sách phát mới" onclick="openCreatePlaylistModal()">
                     <i class="fa-solid fa-plus"></i>
                 </button>
             </div>
@@ -448,18 +624,37 @@
 
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Ô Tải/Kéo Nhạc Về Storage -->
-            <div class="upload-area" id="upload-box" onclick="document.getElementById('file-input').click()">
-                <i class="fa-solid fa-cloud-arrow-up"></i>
-                <p>Nhấp vào đây hoặc kéo thả bài hát (MP3, WAV, M4A) vào đây</p>
-                <span>Nhạc sẽ được lưu trữ vĩnh viễn trên trang web của bạn</span>
+            <!-- Khu vực thêm nhạc (Dán link & Tải file) -->
+            <div class="add-music-section">
+                <!-- Dán Link -->
+                <div class="card-box">
+                    <div class="card-title">
+                        <i class="fa-solid fa-link"></i>
+                        <span>Dán Link Nhạc Direct</span>
+                    </div>
+                    <div class="url-input-group">
+                        <input type="text" id="url-input" class="custom-input" placeholder="Dán URL nhạc (.mp3, .aac, stream link)...">
+                        <button class="btn-custom" onclick="addSongFromURL()">Thêm Link</button>
+                    </div>
+                </div>
+
+                <!-- Tải File Cục Bộ -->
+                <div class="card-box">
+                    <div class="card-title">
+                        <i class="fa-solid fa-folder-open"></i>
+                        <span>Tải Tệp Nhạc Cục Bộ</span>
+                    </div>
+                    <div class="upload-area" onclick="document.getElementById('file-input').click()">
+                        <p><i class="fa-solid fa-cloud-arrow-up"></i> Kéo thả hoặc nhấp để tải file MP3/WAV vào lưu trữ</p>
+                    </div>
+                </div>
             </div>
 
             <div class="songs-section">
                 <h3 id="current-playlist-title">Danh sách bài hát</h3>
                 <div class="song-list-container" id="song-list-body"></div>
                 <div id="empty-msg" class="empty-state">
-                    Danh sách chưa có bài hát. Hãy tải nhạc lên để phát!
+                    Chưa có bài hát nào trong danh sách phát này.
                 </div>
             </div>
         </div>
@@ -506,8 +701,37 @@
         <div class="empty-spacer"></div>
     </div>
 
+    <!-- CUSTOM WEB MODALS (Thay thế hoàn toàn alert/prompt/confirm của trình duyệt) -->
+    <!-- Modal Tạo Playlist -->
+    <div class="modal-overlay" id="modal-playlist">
+        <div class="modal-card">
+            <div class="modal-title">Tạo danh sách phát mới</div>
+            <input type="text" id="modal-playlist-input" class="custom-input" placeholder="Tên danh sách phát...">
+            <div class="modal-buttons">
+                <button class="btn-modal-cancel" onclick="closeModal('modal-playlist')">Hủy</button>
+
+                <button class="btn-modal-confirm" onclick="confirmCreatePlaylist()">Tạo mới</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Xác Nhận Xóa Bài Hát -->
+    <div class="modal-overlay" id="modal-delete">
+        <div class="modal-card">
+            <div class="modal-title">Xóa bài hát</div>
+            <p style="color: var(--text-sub); font-size: 14px;">Bạn có chắc chắn muốn xóa bài hát này khỏi danh sách không?</p>
+            <div class="modal-buttons">
+                <button class="btn-modal-cancel" onclick="closeModal('modal-delete')">Hủy</button>
+                <button class="btn-modal-danger" id="btn-confirm-delete">Xóa ngay</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container Thông Báo Toast -->
+    <div class="toast-container" id="toast-container"></div>
+
     <script>
-        // --- CẤU HÌNH CƠ SỞ DỮ LIỆU INDEXEDDB (LƯU TRỮ VĨNH VIỄN TRÊN BỘ NHỚ TRÌNH DUYỆT) ---
+        // --- INDEXEDDB STORAGE ---
         let db;
         const dbName = "SpotifyMinDB";
         const request = indexedDB.open(dbName, 1);
@@ -529,23 +753,57 @@
         let currentSongIndex = -1;
         let isRepeat = false;
         let isShuffle = false;
+        let pendingDeleteIndex = null;
 
         const audio = document.getElementById('audio-player');
         const seekBar = document.getElementById('seek-bar');
         const fileInput = document.getElementById('file-input');
 
-        // Xử lý upload file
-        fileInput.addEventListener('change', (e) => {
-            handleFiles(e.target.files);
-        });
+        // Bắt lỗi âm thanh khi link bị hỏng hoặc lỗi định dạng
+        audio.onerror = () => {
+            showToast("Không thể phát bài hát này (Link bị hỏng hoặc không hỗ trợ)", true);
+            updatePlayButton();
+        };
 
-        // Drag & Drop
-        const uploadBox = document.getElementById('upload-box');
-        uploadBox.addEventListener('dragover', (e) => { e.preventDefault(); });
-        uploadBox.addEventListener('drop', (e) => {
-            e.preventDefault();
-            handleFiles(e.dataTransfer.files);
-        });
+        // --- TOAST NOTIFICATION ---
+        function showToast(msg, isError = false) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${isError ? 'toast-error' : ''}`;
+            toast.innerHTML = `<i class="fa-solid ${isError ? 'fa-triangle-exclamation' : 'fa-circle-check'}"></i> <span>${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // --- CUSTOM MODALS CONTROL ---
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function openCreatePlaylistModal() {
+            document.getElementById('modal-playlist-input').value = '';
+            openModal('modal-playlist');
+        }
+
+        function confirmCreatePlaylist() {
+            const name = document.getElementById('modal-playlist-input').value.trim();
+            if (!name) {
+                showToast("Vui lòng nhập tên danh sách phát", true);
+                return;
+            }
+            const newPl = { id: Date.now(), name: name, songs: [] };
+            playlists.push(newPl);
+            selectPlaylist(newPl.id);
+            closeModal('modal-playlist');
+            showToast(`Đã tạo danh sách phát "${name}"`);
+        }
+
+        // --- FILE & LINK HANDLING ---
+        fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
 
         function handleFiles(files) {
             Array.from(files).forEach(file => {
@@ -554,22 +812,53 @@
                     const songData = {
                         id: songId,
                         title: file.name.replace(/\.[^/.]+$/, ""),
+                        isUrl: false,
                         fileData: file,
                         playlistId: currentPlaylistId
                     };
 
-                    // Lưu vào IndexedDB
                     const tx = db.transaction("songs", "readwrite");
                     tx.objectStore("songs").add(songData);
-
                     tx.oncomplete = () => {
                         loadSongsFromDB();
+                        showToast(`Đã thêm bài hát "${songData.title}"`);
                     };
                 }
             });
         }
 
-        // Tải nhạc từ DB ra giao diện
+        function addSongFromURL() {
+            const urlInput = document.getElementById('url-input');
+            const url = urlInput.value.trim();
+
+            if (!url) {
+                showToast("Vui lòng dán đường dẫn bài hát", true);
+                return;
+            }
+
+            // Trích xuất tên từ URL
+            let fileName = url.substring(url.lastIndexOf('/') + 1).split('?')[0] || "Online Track";
+            if(fileName.length > 30) fileName = fileName.substring(0, 27) + "...";
+
+            const songId = Date.now() + "_" + Math.random().toString(36).substr(2, 9);
+            const songData = {
+                id: songId,
+                title: decodeURIComponent(fileName),
+                isUrl: true,
+                url: url,
+                playlistId: currentPlaylistId
+            };
+
+            const tx = db.transaction("songs", "readwrite");
+            tx.objectStore("songs").add(songData);
+            tx.oncomplete = () => {
+                urlInput.value = '';
+                loadSongsFromDB();
+                showToast("Đã thêm bài hát từ Link");
+            };
+        }
+
+        // --- LOAD SONGS ---
         function loadSongsFromDB() {
             if (!db) return;
             const tx = db.transaction("songs", "readonly");
@@ -590,6 +879,7 @@
             };
         }
 
+        // --- AUDIO CONTROLS ---
         function playSong(index) {
             const currentPl = playlists.find(p => p.id === currentPlaylistId);
             if (!currentPl || index < 0 || index >= currentPl.songs.length) return;
@@ -599,11 +889,22 @@
 
             document.getElementById('np-title').innerText = song.title;
 
-            // Tạo URL tạm thời từ Blob để phát nhạc
-            if (audio.src) URL.revokeObjectURL(audio.src);
-            audio.src = URL.createObjectURL(song.fileData);
-            audio.play();
-            updatePlayButton();
+            if (audio.src && audio.src.startsWith('blob:')) {
+                URL.revokeObjectURL(audio.src);
+            }
+
+            if (song.isUrl) {
+                audio.src = song.url;
+            } else {
+                audio.src = URL.createObjectURL(song.fileData);
+            }
+
+            audio.play().then(() => {
+                updatePlayButton();
+            }).catch(() => {
+                showToast("Lỗi khi phát nguồn âm thanh này", true);
+            });
+
             renderSongs();
             setupMediaSession(song);
         }
@@ -626,11 +927,13 @@
         function toggleRepeat() {
             isRepeat = !isRepeat;
             document.getElementById('btn-repeat').classList.toggle('active-mode', isRepeat);
+            showToast(isRepeat ? "Đã bật lặp lại" : "Đã tắt lặp lại");
         }
 
         function toggleShuffle() {
             isShuffle = !isShuffle;
             document.getElementById('btn-shuffle').classList.toggle('active-mode', isShuffle);
+            showToast(isShuffle ? "Đã bật phát ngẫu nhiên" : "Đã tắt phát ngẫu nhiên");
         }
 
         function playNext() {
@@ -683,37 +986,34 @@
             return `${min < 10 ? '0' : ''}${min}:${sec < 10 ? '0' : ''}${sec}`;
         }
 
-        // Xóa nhạc có thông báo xác nhận + xóa khỏi IndexedDB
-        function deleteSong(index) {
-            if (!confirm("Bạn có chắc chắn muốn xóa bài hát này khỏi máy không?")) return;
+        // --- DELETE SONG ---
+        function promptDeleteSong(index) {
+            pendingDeleteIndex = index;
+            openModal('modal-delete');
+        }
 
+        document.getElementById('btn-confirm-delete').onclick = () => {
+            if (pendingDeleteIndex === null) return;
             const currentPl = playlists.find(p => p.id === currentPlaylistId);
-            const songToDelete = currentPl.songs[index];
+            const songToDelete = currentPl.songs[pendingDeleteIndex];
 
-            // Xóa khỏi DB
             const tx = db.transaction("songs", "readwrite");
             tx.objectStore("songs").delete(songToDelete.id);
 
             tx.oncomplete = () => {
-                if (index === currentSongIndex) {
+                if (pendingDeleteIndex === currentSongIndex) {
                     audio.pause();
                     audio.src = '';
                     currentSongIndex = -1;
                     updatePlayButton();
                     document.getElementById('np-title').innerText = 'Chưa chọn bài hát';
                 }
+                closeModal('modal-delete');
                 loadSongsFromDB();
+                showToast("Đã xóa bài hát khỏi danh sách");
+                pendingDeleteIndex = null;
             };
-        }
-
-        function createNewPlaylist() {
-            const name = prompt("Nhập tên danh sách phát mới:");
-            if (name && name.trim()) {
-                const newPl = { id: Date.now(), name: name.trim(), songs: [] };
-                playlists.push(newPl);
-                selectPlaylist(newPl.id);
-            }
-        }
+        };
 
         function selectPlaylist(id) {
             currentPlaylistId = id;
@@ -762,15 +1062,15 @@
                     <div class="song-index">${index + 1}</div>
                     <div class="song-info">
                         <div class="song-icon-box">
-                            <i class="fa-solid fa-music"></i>
+                            <i class="fa-solid ${song.isUrl ? 'fa-link' : 'fa-music'}"></i>
                         </div>
                         <div class="song-text">
                             <span class="song-title">${song.title}</span>
-                            <span class="song-artist">Local Track</span>
+                            <span class="song-artist">${song.isUrl ? 'Online Stream' : 'Local Track'}</span>
                         </div>
                     </div>
                     <div class="song-actions">
-                        <button class="btn-delete" title="Xóa" onclick="deleteSong(${index})">
+                        <button class="btn-delete" title="Xóa" onclick="promptDeleteSong(${index})">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </div>
